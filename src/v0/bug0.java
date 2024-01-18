@@ -4,7 +4,6 @@ import battlecode.common.Direction;
 import battlecode.common.GameActionException;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
-import org.apache.commons.lang3.ObjectUtils;
 
 // Bug0 implementation?
 public class bug0 {

@@ -2,12 +2,12 @@ package v0;
 
 import battlecode.common.GameActionException;
 import battlecode.common.MapLocation;
-import v0.util.*;
+import v1.util.*;
 public class Duck extends RobotPlayer{
     private static final int ARRAY_SIZE = 64;
 
     private static int[] shared_array_buf = new int[ARRAY_SIZE];
-    private static v0.util.FastIterableIntSet shared_array_changed_indexes = new FastIterableIntSet(ARRAY_SIZE);
+    private static v1.util.FastIterableIntSet shared_array_changed_indexes = new FastIterableIntSet(ARRAY_SIZE);
 
     public static MapLocation[] allied_spawn_locations = {null, null, null};
     public static MapLocation[] shitter_spawn_locations = {null, null, null};
