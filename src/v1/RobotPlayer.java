@@ -2,6 +2,7 @@ package v1;
 
 import battlecode.common.*;
 import v0.util.FastLocIntMap;
+import v0.util.FastMath;
 
 import java.util.Random;
 
@@ -87,7 +88,7 @@ public strictfp class RobotPlayer {
                     }
 
 
-                    if (rc.getLocation().equals(target))
+                    if (FastMath.get_distance(rc.getLocation(), target) < 5.0)
                     {
                         FlagInfo[] nearbyFlags = rc.senseNearbyFlags(-1);
                         if (nearbyFlags.length > 0)
@@ -95,6 +96,7 @@ public strictfp class RobotPlayer {
                             for (FlagInfo nearbyFlag : nearbyFlags) {
                                 if (nearbyFlag.getTeam().equals(oppTeam)) {
                                     target = nearbyFlag.getLocation();
+                                    Duck.update_squad_target(squadID, target);
                                     break;
                                 }
                             }
@@ -105,6 +107,7 @@ public strictfp class RobotPlayer {
                     }
 
                     bug0.move_toward_goal( rc, target);
+                    rc.setIndicatorString("Target : (" + Integer.toString(target.x) + "," + Integer.toString(target.y) + ")");
                     if (hadFlag){
                         if (!rc.hasFlag()){
                             System.out.println("Captured flag!");
