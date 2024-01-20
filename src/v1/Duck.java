@@ -1,13 +1,13 @@
 package v1;
 
-import battlecode.common.GameActionException;
-import battlecode.common.MapLocation;
+import battlecode.common.*;
 import v1.util.*;
 
 import java.util.Map;
 
 
 public class Duck extends RobotPlayer{
+    static RobotController rc;
 
     public enum role {
         unassigned,
@@ -66,7 +66,46 @@ public class Duck extends RobotPlayer{
             target = new MapLocation(mapWidth - randomLoc.x, mapHeight - randomLoc.y);
             update_squad_target(squad_id,  target);
             update_shared_array_from_buffer(); // TODO put at end of duck's turn
+
         }
+
+        if (duckRole == role.leader)
+        {
+            if (rc.canBuyGlobal(GlobalUpgrade.ACTION)) rc.buyGlobal(GlobalUpgrade.ACTION);
+            if (rc.canBuyGlobal(GlobalUpgrade.HEALING)) rc.buyGlobal(GlobalUpgrade.HEALING);
+            if (rc.canBuyGlobal(GlobalUpgrade.CAPTURING)) rc.buyGlobal(GlobalUpgrade.CAPTURING);
+
+            if (rc.getRoundNum() <= GameConstants.SETUP_ROUNDS || (rc.getRoundNum() >= GameConstants.SETUP_ROUNDS && rc.getCrumbs() > 500))
+            {
+                if (rc.getRoundNum() % 3 == 2) {
+                    if (rc.canBuild(TrapType.STUN ,rc.getLocation())) rc.build(TrapType.STUN, rc.getLocation());
+                } else if (rc.getRoundNum() % 3 == 1) {
+                    if (rc.canBuild(TrapType.EXPLOSIVE ,rc.getLocation())) rc.build(TrapType.EXPLOSIVE, rc.getLocation());
+                } else {
+                    if (rc.canBuild(TrapType.WATER ,rc.getLocation())) rc.build(TrapType.WATER, rc.getLocation());
+                }
+            }
+        }
+
+        RobotInfo[] nearbyRobots = rc.senseNearbyRobots(4);
+        if (rc.getActionCooldownTurns() < 10)
+        {
+            for (RobotInfo robot : nearbyRobots)
+            {
+                if (rc.getActionCooldownTurns() >= 10) break;
+
+                if(rc.canAttack(robot.getLocation())) rc.attack(robot.getLocation());
+                else if (rc.canHeal(robot.getLocation())) rc.heal(robot.getLocation());
+                    
+
+            }
+
+
+        }
+
+
+
+
         // If leader then declare a target.
     }
 

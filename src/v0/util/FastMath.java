@@ -62,12 +62,5 @@ public class FastMath {
         return origin.directionTo(a);
     }
 
-    static public double get_distance(MapLocation a, MapLocation b)
-    {
-        int x, y;
-        x = a.x - b.x;
-        y = a.y - b.y;
-        return Math.sqrt(x^2 + y^2);
-    }
 
 }

@@ -1,8 +1,8 @@
 package v1;
 
 import battlecode.common.*;
-import v0.util.FastLocIntMap;
-import v0.util.FastMath;
+import v1.util.FastLocIntMap;
+import v1.util.FastMath;
 
 import java.util.Random;
 
@@ -43,7 +43,7 @@ public strictfp class RobotPlayer {
         mapHeight = rc.getMapHeight();
         turnCount = rc.getRoundNum();
         rng = new Random(rc.getID());
-
+        Duck.rc = rc;
 
 
         // While loop means duck is alive. Will run 1 iteration per turn
@@ -85,29 +85,40 @@ public strictfp class RobotPlayer {
                         target = spawnLocs[0];
                         hadFlag = true;
                         Duck.update_squad_target(squadID, target);
+                        System.out.printf("Flag target: %d, %d", target.x, target.y);
                     }
+                    else {
 
 
-                    if (FastMath.get_distance(rc.getLocation(), target) < 5.0)
-                    {
-                        FlagInfo[] nearbyFlags = rc.senseNearbyFlags(-1);
-                        if (nearbyFlags.length > 0)
-                        {
-                            for (FlagInfo nearbyFlag : nearbyFlags) {
-                                if (nearbyFlag.getTeam().equals(oppTeam)) {
-                                    target = nearbyFlag.getLocation();
+                        if (FastMath.get_distance(rc.getLocation(), target) < 5.0) {
+                            FlagInfo[] nearbyFlags = rc.senseNearbyFlags(-1);
+
+                            if (nearbyFlags.length > 0) {
+                                for (FlagInfo nearbyFlag : nearbyFlags) {
+                                    if (nearbyFlag.getTeam().equals(oppTeam)) {
+                                        target = nearbyFlag.getLocation();
+                                        Duck.update_squad_target(squadID, target);
+                                        break;
+                                    }
+                                }
+                            } else {
+                                MapLocation[] hiddenFlags = rc.senseBroadcastFlagLocations();
+                                if (hiddenFlags.length > 0)
+                                {
+                                    int randInt = rng.nextInt(hiddenFlags.length);
+                                    target = hiddenFlags[randInt];
                                     Duck.update_squad_target(squadID, target);
-                                    break;
+                                }
+                                else {
+                                    target = rc.getLocation().add(directions[rng.nextInt(directions.length)]);
                                 }
                             }
                         }
-                        else {
-                            target = rc.getLocation().add(directions[rng.nextInt(directions.length)]);
-                        }
+
                     }
 
                     bug0.move_toward_goal( rc, target);
-                    rc.setIndicatorString("Target : (" + Integer.toString(target.x) + "," + Integer.toString(target.y) + ")");
+                    rc.setIndicatorString("id: " + Integer.toString(squadID)+ " Target : (" + Integer.toString(target.x) + "," + Integer.toString(target.y) + ")");
                     if (hadFlag){
                         if (!rc.hasFlag()){
                             System.out.println("Captured flag!");

@@ -8,7 +8,6 @@ import battlecode.common.RobotController;
 // Bug0 implementation?
 public class bug0 {
     static Direction heading;
-
     static public void move_toward_goal(RobotController rc, MapLocation goal) throws GameActionException
     {
         // Check if you are at goal
@@ -16,7 +15,7 @@ public class bug0 {
         {
             return;
         }
-        if (!rc.isActionReady())
+        if (!rc.isMovementReady())
         {
             return;
         }
@@ -33,10 +32,6 @@ public class bug0 {
             {
                 heading = dir;
             }
-            if (rc.canAttack(planned_location))
-            {
-                rc.attack((planned_location));
-            }
             //cycle through dirs
             for (int i = 0; i < 8; i++)
             {
@@ -48,15 +43,17 @@ public class bug0 {
                 }
                 else
                 {
+
                     planned_location = rc.getLocation().add(heading);
-                    if (rc.canAttack(planned_location))
-                    {
-                        rc.attack((planned_location));
+                    if (rc.canFill(planned_location)){
+                        rc.fill(planned_location);
                     }
-                    else
-                    {
-                        heading = heading.rotateLeft();
-                    }
+//                    if (rc.canAttack(planned_location))
+//                    {
+//                        rc.attack((planned_location));
+//                    }
+
+                    heading = heading.rotateLeft();
 
                 }
             }
